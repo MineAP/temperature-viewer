@@ -136,7 +136,7 @@ app.get("/api/history", function(req, res, next){
 
 
 // APIサーバーから温度と湿度を取得
-function collectData() {
+function collectData(retoryCount=0) {
     const options = {
         url: URL ,
         method: "GET",
@@ -146,6 +146,11 @@ function collectData() {
     request(options).then((json)=>{
         if(json["data"]["room_temperature"] == "N/A" || json["data"]["room_humidity"] == "N/A") {
             console.log("can't collect data (value is N/A)");
+            
+            if (retoryCount < 5) {
+                console.log("retory collectData() ...")
+                collectData(retoryCount++)
+            }
         } else {
             json["datetime"] = new Date(json["timestamp"] * 1000)
             const value = JSON.stringify(json);
