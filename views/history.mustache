@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <h1>{{pageTitle}}</h1>
+        <h3>{{chartTitle1}}</h3>
+        <canvas id="tempHistoryChart" width="400" height="150"></canvas>
+        <script>
+          var ctx1 = document.getElementById("tempHistoryChart").getContext('2d');
+          var tempHistoryChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels:  {{{labels}}} ,
+                datasets: [{
+                    label: "{{data_label_1}}",
+                    data: [ {{data1}} ],
+                    borderColor: "rgba(255,0,0,1)",
+                    backgroundColor: "rgba(0,0,0,0)"
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:false
+                        }
+                    }]
+                }
+            }
+        });
+        </script>
+        <h3>{{chartTitle2}}</h3>
+        <canvas id="humHistoryChart" width="400" height="150"></canvas>
+        <script>
+          var ctx2 = document.getElementById("humHistoryChart").getContext('2d');
+          var humHistoryChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels:  {{{labels}}} ,
+                datasets: [{
+                    label: "{{data_label_2}}",
+                    data: [ {{data2}} ],
+                    borderColor: "rgba(0,0,255,1)",
+                    backgroundColor: "rgba(0,0,0,0)"
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:false
+                        }
+                    }]
+                }
+            }
+        });
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
