@@ -8,7 +8,7 @@
 
 ## 動作環境
 
-温湿度センサーWebAPI(https://github.com/MineAP/raspberrypi-camera-server)と同じ環境で動作することを想定する。
+温湿度センサーWebAPI( https://github.com/MineAP/raspberrypi-camera-server )と同じ環境で動作することを想定する。
 
 - ハードウェア＆OS
   - RaspberryPi 4

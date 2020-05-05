@@ -7,58 +7,74 @@
     <div class="container">
       <div>
         <h1>{{pageTitle}}</h1>
-        <h3>{{chartTitle1}}</h3>
-        <canvas id="tempHistoryChart" width="400" height="150"></canvas>
-        <script>
-          var ctx1 = document.getElementById("tempHistoryChart").getContext('2d');
-          var tempHistoryChart = new Chart(ctx1, {
-            type: 'line',
-            data: {
-                labels:  {{{labels}}} ,
-                datasets: [{
-                    label: "{{data_label_1}}",
-                    data: [ {{data1}} ],
-                    borderColor: "rgba(255,0,0,1)",
-                    backgroundColor: "rgba(0,0,0,0)"
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:false
-                        }
-                    }]
-                }
-            }
-        });
-        </script>
-        <h3>{{chartTitle2}}</h3>
-        <canvas id="humHistoryChart" width="400" height="150"></canvas>
-        <script>
-          var ctx2 = document.getElementById("humHistoryChart").getContext('2d');
-          var humHistoryChart = new Chart(ctx2, {
-            type: 'line',
-            data: {
-                labels:  {{{labels}}} ,
-                datasets: [{
-                    label: "{{data_label_2}}",
-                    data: [ {{data2}} ],
-                    borderColor: "rgba(0,0,255,1)",
-                    backgroundColor: "rgba(0,0,0,0)"
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:false
-                        }
-                    }]
-                }
-            }
-        });
-        </script>
+        <div>
+          表示範囲：
+          <input type="number" id="count_input" min="10" max="1000" value="{{count}}" />件
+          <button type=“button” onclick="recollectButtonOnClick()">更新</button>
+          <script>
+          function recollectButtonOnClick() {
+            var count = document.getElementById("count_input").value
+            var url='history?count=' + count
+            location.href=url
+          }
+          </script>
+        </div>
+        <div>
+          <h3>{{chartTitle1}}</h3>
+          <canvas id="tempHistoryChart" width="400" height="150"></canvas>
+          <script>
+            var ctx1 = document.getElementById("tempHistoryChart").getContext('2d');
+            var tempHistoryChart = new Chart(ctx1, {
+              type: 'line',
+              data: {
+                  labels:  {{{labels}}} ,
+                  datasets: [{
+                      label: "{{data_label_1}}",
+                      data: [ {{data1}} ],
+                      borderColor: "rgba(255,0,0,1)",
+                      backgroundColor: "rgba(0,0,0,0)"
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:false
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+        </div>
+        <div>
+          <h3>{{chartTitle2}}</h3>
+          <canvas id="humHistoryChart" width="400" height="150"></canvas>
+          <script>
+            var ctx2 = document.getElementById("humHistoryChart").getContext('2d');
+            var humHistoryChart = new Chart(ctx2, {
+              type: 'line',
+              data: {
+                  labels:  {{{labels}}} ,
+                  datasets: [{
+                      label: "{{data_label_2}}",
+                      data: [ {{data2}} ],
+                      borderColor: "rgba(0,0,255,1)",
+                      backgroundColor: "rgba(0,0,0,0)"
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:false
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+        </div>
       </div>
     </div>
   </body>

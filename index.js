@@ -16,6 +16,7 @@ const URL = "http://raspberrypi.local:5000/api/temperatureandhumidity";
 const port = 3000
 const intervl_ms = 5 * 60 * 1000
 const history_max_count = 1000
+const history_default_count = 100
 
 
 // httpサーバーの起動
@@ -66,13 +67,19 @@ app.get("/top", function(req, res, next){
         });        
     }).catch((err)=>{
         console.error(err);
-        throw err;
+        next(err);
     })
 });
 
 // historyページにアクセスされた時の処理
 app.get("/history", function(req, res, next){
-    lrangeAsync("history", 0, history_max_count).then((data)=>{
+
+    var count = Number(req.query.count);
+    if (isNaN(count) || count < 0 || history_max_count < count) {
+        count = history_default_count
+    }
+
+    lrangeAsync("history", 0, count).then((data)=>{
         console.log(data);
 
         data = data.reverse()
@@ -100,11 +107,12 @@ app.get("/history", function(req, res, next){
             data_label_1:data_label_1,
             data1:data1,
             data_label_2:data_label_2,
-            data2:data2
+            data2:data2,
+            count:count
         });        
     }).catch((err)=>{
         console.error(err);
-        throw err;
+        next(err);
     })
 });
 
@@ -116,7 +124,7 @@ app.get("/api/current", function(req, res, next){
         res.json(JSON.parse(data));
     }).catch((err)=>{
         console.error(err);
-        throw err;
+        next(err);
     })
 });
 app.get("/api/history", function(req, res, next){
@@ -130,7 +138,7 @@ app.get("/api/history", function(req, res, next){
         res.json(list);
     }).catch((err)=>{
         console.error(err);
-        throw err;
+        next(err);
     })
 });
 
@@ -143,7 +151,7 @@ function collectData(retoryCount=0) {
         qs: {},
         json: true
     };
-    request(options).then((json)=>{
+    var ret = request(options).then((json)=>{
         if(json["data"]["room_temperature"] == "N/A" || json["data"]["room_humidity"] == "N/A") {
             console.log("can't collect data (value is N/A)");
             
@@ -159,8 +167,11 @@ function collectData(retoryCount=0) {
             client.set("currentdata", value)   
         }
     }).catch((err)=>{
-        console.error(err);
+        console.error("collectData() error: " + err);
+        throw err;
     }).finally(()=>{
-        console.log("collect data has finished.");
+        console.log("collectData() has finished.");
     })
+    console.log("collectData() result:" + ret)
+    return ret;
 }
