@@ -10,6 +10,8 @@ const app = express();
 const mustacheExpress = require('mustache-express');
 const bodyParser = require('body-parser');
 
+// moment
+const momenttz = require('moment-timezone');
 
 const URL = "http://raspberrypi.local:5000/api/temperatureandhumidity";
 
@@ -17,6 +19,8 @@ const port = 3000
 const intervl_ms = 5 * 60 * 1000
 const history_max_count = 1000
 const history_default_count = 100
+
+const tz_default = process.env.TZ ? process.env.TZ : "Asia/Tokyo";
 
 
 // httpサーバーの起動
@@ -27,6 +31,7 @@ app.use (bodyParser.urlencoded( {extended : true} ) );
 
 var server = app.listen(port, function(){
     console.log("Node.js is listening to PORT:" + server.address().port);
+    console.log("tz: " + tz_default)
 });
 
 
@@ -55,6 +60,11 @@ const lrangeAsync = promisify(client.lrange).bind(client);
 // topページにアクセスされた時の処理
 app.get("/top", function(req, res, next){
 
+    var timezone = req.query.tz;
+    if (!timezone) {
+        timezone = tz_default;
+    }
+
     getAsync("currentdata").then((data)=>{
         console.log(data);
         const json=JSON.parse(data)
@@ -63,7 +73,7 @@ app.get("/top", function(req, res, next){
             pageTitle: "現在の温度と湿度",
             temp: json["data"]["room_temperature"],
             hum: json["data"]["room_humidity"],
-            datetime: json["datetime"]
+            datetime: momenttz(json["datetime"]).tz(timezone)
         });        
     }).catch((err)=>{
         console.error(err);
@@ -77,6 +87,10 @@ app.get("/history", function(req, res, next){
     var count = Number(req.query.count);
     if (isNaN(count) || count < 0 || history_max_count < count) {
         count = history_default_count
+    }
+    var timezone = req.query.tz;
+    if (!timezone) {
+        timezone = tz_default;
     }
 
     lrangeAsync("history", 0, count).then((data)=>{
@@ -95,7 +109,7 @@ app.get("/history", function(req, res, next){
             var data = JSON.parse(element)
             data1.push(data["data"]["room_temperature"])
             data2.push(data["data"]["room_humidity"])
-            labels.push(data["datetime"].toString())
+            labels.push(momenttz(data["datetime"]).tz(timezone).toString())
         });
 
         res.render("history", 
