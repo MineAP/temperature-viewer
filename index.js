@@ -73,7 +73,7 @@ app.get("/top", function(req, res, next){
             pageTitle: "現在の温度と湿度",
             temp: json["data"]["room_temperature"],
             hum: json["data"]["room_humidity"],
-            datetime: momenttz(json["datetime"]).tz(timezone).toISOString()
+            datetime: momenttz(json["datetime"]).tz(timezone).toISOString(true)
         });        
     }).catch((err)=>{
         console.error(err);
@@ -109,7 +109,7 @@ app.get("/history", function(req, res, next){
             var data = JSON.parse(element)
             data1.push(data["data"]["room_temperature"])
             data2.push(data["data"]["room_humidity"])
-            labels.push(momenttz(data["datetime"]).tz(timezone).toISOString())
+            labels.push(momenttz(data["datetime"]).tz(timezone).toISOString(true))
         });
 
         res.render("history", 
